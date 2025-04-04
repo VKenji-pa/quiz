@@ -1,6 +1,6 @@
 [![tests](https://github.com/andrehora/quiz/actions/workflows/tests.yml/badge.svg)](https://github.com/andrehora/quiz/actions/workflows/tests.yml)
 
-# Victor Kenji - 2020007090
+# Victor Kenji - 2020007090 
 
 # Quiz testing example
 
