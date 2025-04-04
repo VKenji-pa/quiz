@@ -35,7 +35,7 @@ def test_create_choice():
     assert choice.text == 'a'
     assert not choice.is_correct
     
-#############
+##########################################
 
 #1
 def test_init_choice_check():
@@ -156,3 +156,64 @@ def test_set_all_choices_to_correct():
     question.set_correct_choices(ids)
     selected = question.select_choices(ids)
     assert len(selected) == 10
+
+###############################################
+
+@pytest.fixture
+def question1():
+    q = Question(title="Questao 1")
+    
+    q.add_choice("A", False)
+    q.add_choice("B", True)
+    q.add_choice("C", False)
+    
+    return q
+
+@pytest.fixture
+def question2():
+    q = Question(title="Questao 2", max_selections=2)
+    
+    q.add_choice("C++", False)
+    q.add_choice("C#", True)
+    q.add_choice("C", False)
+    q.add_choice("Python", True)
+    q.add_choice("Java", False)
+    
+    return q
+
+@pytest.fixture
+def mini_activity(question1, question2):
+    return [question1, question2]
+
+def test_questions_in_activity(mini_activity, question1, question2):
+    assert question1 in mini_activity
+    assert question2 in mini_activity
+    assert not question1 == question2
+    
+def test_add_choice_to_question1(question1, mini_activity):
+    mini_activity[0].add_choice("D", False)
+    
+    assert len(question1.choices) == len(mini_activity[0].choices)
+    assert question1._choice_by_id(4) == mini_activity[0]._choice_by_id(4)
+    assert question1._choice_by_id(4).text == "D"
+    
+def test_check_choice2_in_question1(mini_activity):
+    assert len(mini_activity[0].choices) == 3
+    assert mini_activity[0].choices[1].text == "B"
+    assert mini_activity[0].choices[1].is_correct == True
+
+def test_edit_correct_choice_in_questions2(question2, mini_activity):
+    mini_activity[1].remove_choice_by_id(2)
+    mini_activity[1].set_correct_choices([5])
+    
+    assert len(question2.choices) == 4
+    assert question2.choices[3].is_correct == True
+    assert question2.choices[3].text == "Java"
+    
+def test_ace_mini_activity(mini_activity):
+    selected = []
+    selected.append(mini_activity[0].select_choices([2]))
+    selected.append(mini_activity[1].select_choices([2, 4]))
+    
+    assert len(selected[0]) == len(mini_activity[0]._correct_choice_ids())
+    assert len(selected[1]) == len(mini_activity[1]._correct_choice_ids())
